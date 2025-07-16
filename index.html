@@ -2,27 +2,30 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Malla Interactiva</title>
+  <title>Malla Interactiva Ingeniería Civil Industrial</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f5f5f5;
-      text-align: center;
-    }
-    h1 {
-      color: #333;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .semestre {
       border: 2px solid #ccc;
       border-radius: 8px;
-      padding: 15px;
-      margin: 20px auto;
-      width: 300px;
+      padding: 10px;
+      margin: 10px;
+      width: 280px;
       background: white;
     }
+    .semestre h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
     .ramo {
-      padding: 8px;
-      margin: 5px 0;
+      padding: 6px;
+      margin: 4px 0;
       cursor: pointer;
       background: #b3e5fc; /* celeste */
       border-radius: 5px;
@@ -35,4 +38,108 @@
     }
     .ramo.bloqueado {
       background: #ccc;
-     
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const ramos = [
+      { id: 'fisica1', nombre: 'Introducción a la Física', semestre: 1 },
+      { id: 'calculo1', nombre: 'Cálculo I', semestre: 1 },
+      { id: 'algebra1', nombre: 'Álgebra I', semestre: 1 },
+      { id: 'quimica', nombre: 'Química General', semestre: 1 },
+      { id: 'comunicacion1', nombre: 'Comunicación Efectiva I', semestre: 1 },
+
+      { id: 'mecanica', nombre: 'Mecánica', prereq: ['fisica1'], semestre: 2 },
+      { id: 'calculo2', nombre: 'Cálculo II', prereq: ['calculo1'], semestre: 2 },
+      { id: 'algebra2', nombre: 'Álgebra II', prereq: ['algebra1'], semestre: 2 },
+      { id: 'dialogo', nombre: 'Diálogo, Fe y Cultura', semestre: 2 },
+
+      { id: 'ecuaciones', nombre: 'Ecuaciones Diferenciales', prereq: ['calculo2'], semestre: 3 },
+      { id: 'estadistica', nombre: 'Estadística', prereq: ['algebra2'], semestre: 3 },
+      { id: 'programacion', nombre: 'Programación', semestre: 3 },
+      { id: 'intro-ingenieria', nombre: 'Proyecto: Intro a la Ingeniería', semestre: 3 },
+
+      { id: 'electromagnetismo', nombre: 'Electromagnetismo', prereq: ['fisica1'], semestre: 4 },
+      { id: 'admin1', nombre: 'Admin. de Producción I', semestre: 4 },
+      { id: 'estad-aplicada', nombre: 'Estadística Aplicada', prereq: ['estadistica'], semestre: 4 },
+      { id: 'termodinamica', nombre: 'Termodinámica', prereq: ['quimica'], semestre: 4 },
+      { id: 'diseno', nombre: 'Proyecto: Diseño de Sistemas Productivos', semestre: 4 },
+
+      { id: 'electivo-ciencias', nombre: 'Electivo Ciencias', semestre: 5 },
+      { id: 'investigacion1', nombre: 'Investigación Operativa I', prereq: ['estad-aplicada'], semestre: 5 },
+      { id: 'datos', nombre: 'Ciencia de Datos', prereq: ['programacion'], semestre: 5 },
+      { id: 'economia', nombre: 'Economía', semestre: 5 },
+      { id: 'comunicacion2', nombre: 'Comunicación Efectiva II', semestre: 5 },
+
+      { id: 'investigacion2', nombre: 'Investigación Operativa II', prereq: ['investigacion1'], semestre: 6 },
+      { id: 'admin2', nombre: 'Admin. Producción II', prereq: ['admin1'], semestre: 6 },
+      { id: 'contabilidad', nombre: 'Contabilidad de Dirección', semestre: 6 },
+      { id: 'calidad', nombre: 'Proyecto: Calidad', semestre: 6 },
+
+      { id: 'emprendimiento', nombre: 'Emprendimiento', semestre: 7 },
+      { id: 'eco-ingenieria', nombre: 'Ingeniería Económica', prereq: ['economia'], semestre: 7 },
+      { id: 'info', nombre: 'Tecnologías de la Información', semestre: 7 },
+      { id: 'cad-suministro', nombre: 'Cadena de Suministro', prereq: ['admin2'], semestre: 7 },
+
+      { id: 'plan-estrategica', nombre: 'Planificación Estratégica', semestre: 8 },
+      { id: 'gestion-capital', nombre: 'Gestión de Capital Humano', semestre: 8 },
+      { id: 'org-digital', nombre: 'Organización Digital', semestre: 8 },
+      { id: 'activos', nombre: 'Gestión de Activos', semestre: 8 },
+      { id: 'proyecto-inversion', nombre: 'Proyecto: Form. y Eval. Proyecto de Inversión', semestre: 8 },
+
+      { id: 'electivo9', nombre: 'Electivo Profesional', semestre: 9 },
+      { id: 'electivo9b', nombre: 'Electivo Profesional', semestre: 9 },
+      { id: 'electivo9c', nombre: 'Electivo Profesional', semestre: 9 },
+
+      { id: 'electivo10a', nombre: 'Electivo Profesional', semestre: 10 },
+      { id: 'electivo10b', nombre: 'Electivo Profesional', semestre: 10 },
+      { id: 'capstone', nombre: 'Capstone Project', semestre: 10 }
+    ];
+
+    const maxSemestre = 10;
+
+    for (let s = 1; s <= maxSemestre; s++) {
+      const cont = document.createElement('div');
+      cont.className = 'semestre';
+      cont.innerHTML = `<h2>Semestre ${s}</h2>`;
+
+      ramos.filter(r => r.semestre === s).forEach(ramo => {
+        const div = document.createElement('div');
+        div.className = 'ramo';
+        div.id = ramo.id;
+        div.textContent = ramo.nombre;
+        if (ramo.prereq) div.classList.add('bloqueado');
+        cont.appendChild(div);
+      });
+
+      document.body.appendChild(cont);
+    }
+
+    document.querySelectorAll(".ramo").forEach(ramo => {
+      ramo.addEventListener("click", function () {
+        if (ramo.classList.contains("bloqueado")) return;
+        ramo.classList.toggle("aprobado");
+        desbloquearRamos();
+      });
+    });
+
+    function desbloquearRamos() {
+      ramos.forEach(ramo => {
+        if (!ramo.prereq) return;
+        const elem = document.getElementById(ramo.id);
+        const cumple = ramo.prereq.every(id => {
+          const prereq = document.getElementById(id);
+          return prereq && prereq.classList.contains("aprobado");
+        });
+        if (cumple && elem.classList.contains("bloqueado")) {
+          elem.classList.remove("bloqueado");
+          elem.style.background = "#b3e5fc";
+          elem.style.cursor = "pointer";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
